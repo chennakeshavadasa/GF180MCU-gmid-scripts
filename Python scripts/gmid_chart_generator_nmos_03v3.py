@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import CheckButtons
 
 # Define the path to the directory
-path = r"##FilePath##"
+path = r"C:\Users\NITHIN P\Downloads\nfet3_01v8_lvt\\"
 
 # Initialize lists for storing results
 vov = [[] for _ in range(8)]
@@ -13,7 +13,7 @@ W = 2e-6
 
 # Read data from the text files
 for i in range(8):
-    filename = path + "gmid_nmos_" + str(i+1) + "_nfet_01v8_lvt_tb.txt"
+    filename = path + "gmid_nmos_" + str(i+1) + "_nfet_03v3_tb.txt"
     try:
         with open(filename, 'r') as fID:
             for line in fID:
@@ -42,6 +42,31 @@ for i in range(8):
 # Labels for different transistor lengths
 labels = ['0.28u', '0.3u', '0.5u', '1u', '1.5u', '2u', '2.5u', '3u']
 
+# Function to auto-scale the axes based on visible lines and add margin
+def autoscale_lines(ax, lines, margin=0.05):
+    x_data = []
+    y_data = []
+    
+    # Collect data from visible lines
+    for line in lines:
+        if line.get_visible():
+            x_data.extend(line.get_xdata())
+            y_data.extend(line.get_ydata())
+    
+    if x_data and y_data:  # If there is visible data
+        x_min, x_max = min(x_data), max(x_data)
+        y_min, y_max = min(y_data), max(y_data)
+        
+        # Add margin (percentage of the range)
+        x_margin = (x_max - x_min) * margin
+        y_margin = (y_max - y_min) * margin
+        
+        ax.set_xlim(x_min - x_margin, x_max + x_margin)
+        ax.set_ylim(y_min - y_margin, y_max + y_margin)
+    else:  # Default to a small range if no data is visible
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+
 # Function to plot with checkboxes for toggling visibility
 def plot_with_checkboxes(x_data, y_data, x_label, y_label, title):
     fig, ax = plt.subplots()
@@ -65,13 +90,17 @@ def plot_with_checkboxes(x_data, y_data, x_label, y_label, title):
     visibility = [True] * 8  # Initialize all to be visible
     check = CheckButtons(rax, labels, visibility)
 
-    # Function to handle checkbox toggle
+    # Function to handle checkbox toggle and auto-scale
     def toggle_lines(label):
         index = labels.index(label)
         lines[index].set_visible(not lines[index].get_visible())
+        autoscale_lines(ax, lines)  # Auto-scale after toggling
         plt.draw()
 
     check.on_clicked(toggle_lines)
+
+    # Initial auto-scaling
+    autoscale_lines(ax, lines)
     plt.show()
 
 # Plot gm/id versus Vov
