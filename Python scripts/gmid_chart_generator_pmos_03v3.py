@@ -36,7 +36,7 @@ for i in range(8):
 # Plot gm/id versus Vov
 plt.figure()
 for i in range(8):
-    plt.plot(vov[i], gm_id[i], marker='o', linestyle='-', label=f"L={['0.1u', '0.2u', '0.3u', '0.4u', '0.5u', '0.6u', '0.7u', '0.8u'][i]}")
+    plt.plot(vov[i], gm_id[i], marker='o', linestyle='-', label=f"L={['0.28u', '0.3u', '0.5u', '1u', '1.5u', '2u', '2.5u', '3u'][i]}")
 plt.xlabel('Vov')
 plt.ylabel('gm/id')
 plt.title('gm/id versus V_{ov}')
@@ -47,7 +47,7 @@ plt.show()
 # Plot gm/gds versus gm/id
 plt.figure()
 for i in range(8):
-    plt.plot(gm_id[i], gm_gds[i], marker='o', linestyle='-', label=f"L={['0.1u', '0.2u', '0.3u', '0.4u', '0.5u', '0.6u', '0.7u', '0.8u'][i]}")
+    plt.plot(gm_id[i], gm_gds[i], marker='o', linestyle='-', label=f"L={['0.28u', '0.3u', '0.5u', '1u', '1.5u', '2u', '2.5u', '3u'][i]}")
 plt.xlabel('gm/id')
 plt.ylabel('gm/gds')
 plt.title('gm/gds vs gm/id')
@@ -58,7 +58,7 @@ plt.show()
 # Plot id/W versus gm/id
 plt.figure()
 for i in range(8):
-    plt.plot(gm_id[i], id_W[i], marker='o', linestyle='-', label=f"L={['0.1u', '0.2u', '0.3u', '0.4u', '0.5u', '0.6u', '0.7u', '0.8u'][i]}")
+    plt.plot(gm_id[i], id_W[i], marker='o', linestyle='-', label=f"L={['0.28u', '0.3u', '0.5u', '1u', '1.5u', '2u', '2.5u', '3u'][i]}")
 plt.xlabel('gm/id')
 plt.ylabel('id/W')
 plt.title('id/W vs gm/id')
