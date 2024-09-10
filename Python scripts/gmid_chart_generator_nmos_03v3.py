@@ -2,13 +2,16 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import CheckButtons
 
 # Define the path to the directory
-path = r"C:\Users\NITHIN P\Downloads\nfet3_01v8_lvt\\"
+path = r"XXXXXXXXXXXXXXXXXX"
 
 # Initialize lists for storing results
-vov = [[] for _ in range(8)]
+vgs = [[] for _ in range(8)]
 gm_id = [[] for _ in range(8)]
 gm_gds = [[] for _ in range(8)]
 id_W = [[] for _ in range(8)]
+ft = [[] for _ in range(8)]      # ft = gm / Cgg
+cgd_cgg = [[] for _ in range(8)] # Cgd / Cgg
+cgs_cgg = [[] for _ in range(8)] # Cgs / Cgg
 W = 2e-6
 
 # Read data from the text files
@@ -19,19 +22,25 @@ for i in range(8):
             for line in fID:
                 try:
                     temp = list(map(float, line.strip().split()))
-                    if len(temp) >= 8:
+                    if len(temp) >= 14:  # Now we're expecting at least 14 columns
                         Vgs = temp[0]
                         gm = temp[1]
                         id_val = temp[3]
                         Vth = temp[5]
                         gds = temp[7]
+                        Cgg = temp[9]  # 10th column is Cgg
+                        Cgs = abs(temp[11]) # 12th column is Cgs
+                        Cgd = abs(temp[13]) # 14th column is Cgd
 
-                        vov_value = Vgs - Vth
-                        if vov_value > 0:
-                            vov[i].append(vov_value)
-                            gm_id[i].append(gm / id_val)
-                            gm_gds[i].append(gm / gds)
-                            id_W[i].append(id_val / W)
+                        vgs[i].append(Vgs)
+                        gm_id[i].append(gm / id_val)
+                        gm_gds[i].append(gm / gds)
+                        id_W[i].append(id_val / W)
+
+                        # Calculate ft, Cgd/Cgg, and Cgs/Cgg
+                        ft[i].append(gm / Cgg)
+                        cgd_cgg[i].append(Cgd / Cgg)
+                        cgs_cgg[i].append(Cgs / Cgg)
                 except (ValueError, IndexError) as e:
                     print(f"Warning: Skipping line due to error: {e}")
     except FileNotFoundError:
@@ -103,11 +112,20 @@ def plot_with_checkboxes(x_data, y_data, x_label, y_label, title):
     autoscale_lines(ax, lines)
     plt.show()
 
-# Plot gm/id versus Vov
-plot_with_checkboxes(vov, gm_id, 'Vov', 'gm/id', 'gm/id versus V_{ov}')
+# Plot gm/id versus Vgs
+plot_with_checkboxes(vgs, gm_id, 'Vgs', 'gm/id', 'gm/id versus Vgs')
 
 # Plot gm/gds versus gm/id
 plot_with_checkboxes(gm_id, gm_gds, 'gm/id', 'gm/gds', 'gm/gds versus gm/id')
 
 # Plot id/W versus gm/id
 plot_with_checkboxes(gm_id, id_W, 'gm/id', 'id/W', 'id/W versus gm/id')
+
+# Plot ft = gm / Cgg versus gm/id
+plot_with_checkboxes(gm_id, ft, 'gm/id', 'ft (Hz)', 'ft versus gm/id')
+
+# Plot Cgd / Cgg versus gm/id
+plot_with_checkboxes(gm_id, cgd_cgg, 'gm/id', 'Cgd / Cgg', 'Cgd / Cgg versus gm/id')
+
+# Plot Cgs / Cgg versus gm/id
+plot_with_checkboxes(gm_id, cgs_cgg, 'gm/id', 'Cgs / Cgg', 'Cgs / Cgg versus gm/id')
